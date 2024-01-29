@@ -32,6 +32,7 @@ This application is a simple bank account implementation. An account able to wit
 
 # Testing
 
-1. 3 customers are already part of the scripts which can be used for testing.  
-2. Create bank account for at-least for 2 customers using rest api to test transfers, withdraw and deposits.
-3. Remaining rest api's should be able to access without any issues
+1. 3 customers with 3 bank accounts with card details are already part of the scripts which can be used for testing.
+    ![image](https://github.com/VeerajKolli/BankAccount/assets/79200457/b536135d-83a7-4b80-8c76-e2a795043585)
+    ![image](https://github.com/VeerajKolli/BankAccount/assets/79200457/b19be007-358b-4751-83c7-148211b4572d)
+    ![image](https://github.com/VeerajKolli/BankAccount/assets/79200457/91ff7ebd-8b36-409c-9d41-8bb4689c9c9f) 
