@@ -1,6 +1,5 @@
 package nl.rabobank.assignment.controllers;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.rabobank.assignment.entities.dto.CustomerDto;
 import nl.rabobank.assignment.entities.entity.Customer;
@@ -14,9 +13,6 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * This class is created to manage customer process
- */
 @Slf4j
 @RestController
 
@@ -29,6 +25,7 @@ public class CustomerController {
     private final CustomerService customerService;
     private final ConversionService conversionService;
 
+
     @Autowired
     public CustomerController(CustomerService customerService, ConversionService conversionService)
     {
@@ -36,6 +33,7 @@ public class CustomerController {
         this.conversionService=conversionService;
     }
 
+    /*Create new customer*/
     @PutMapping
     @ResponseStatus(value = HttpStatus.OK)
     public void saveCustomer(@RequestBody @Valid CustomerDto customerDto) {
@@ -44,6 +42,7 @@ public class CustomerController {
         customerService.saveCustomer(conversionService.convert(customerDto, Customer.class));
     }
 
+    /*Get all customers*/
     @GetMapping(value = METHOD_GET_ALL)
     public List<CustomerDto> getAllCustomers() {
         log.info("/{}{} called", SERVICE_PATH, METHOD_GET_ALL);
@@ -54,6 +53,7 @@ public class CustomerController {
     }
 
 
+    /*Get customers using customer id*/
     @GetMapping(value = "/{customerId}")
     public CustomerDto getCustomer(@PathVariable(name = "customerId") Long customerId) {
         log.info("/{}/{} called", SERVICE_PATH, customerId);

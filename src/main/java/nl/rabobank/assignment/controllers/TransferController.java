@@ -1,6 +1,5 @@
 package nl.rabobank.assignment.controllers;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.rabobank.assignment.entities.dto.AmountDto;
 import nl.rabobank.assignment.services.TransferService;
@@ -29,6 +28,7 @@ public class TransferController {
 
 
 
+    /*Transfer from Bank account to another bank account using bank account Ids*/
     @PostMapping(value = "{fromBankAccountId}/{toBankAccountId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void transfer( @PathVariable(name = "fromBankAccountId") Long fromBankAccountId,

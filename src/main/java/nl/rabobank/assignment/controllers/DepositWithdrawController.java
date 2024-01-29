@@ -23,7 +23,7 @@ public class DepositWithdrawController {
     }
 
 
-
+    /*Withdraw from Bank account using bank account Id*/
     @PostMapping(value = "withdraw/{bankAccountId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void withdraw(@PathVariable(name = "bankAccountId") Long bankAccountId,
@@ -33,6 +33,7 @@ public class DepositWithdrawController {
         depositWithdrawService.withdraw(bankAccountId, amountDto.getAmount());
     }
 
+    /*Deposit to Bank account using bank account Id*/
     @PostMapping(value = "deposit/{bankAccountId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deposit(@PathVariable(name = "bankAccountId") Long bankAccountId,

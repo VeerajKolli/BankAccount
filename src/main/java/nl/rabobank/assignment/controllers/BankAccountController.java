@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * This class is created to manage bank account process
- */
 
 @Slf4j
 @RestController
@@ -38,6 +35,7 @@ public class BankAccountController {
     }
 
 
+    /*Create new bank account for customers*/
     @PutMapping(value = "{customerId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void saveAccount(@PathVariable(name = "customerId") Long customerId,
@@ -48,7 +46,7 @@ public class BankAccountController {
             bankAccountService.addBankAccount(customerId, bankAccount);
         }
     }
-
+    /*Get account balance for all customers*/
     @GetMapping(value = METHOD_GET_BALANCE_ALL)
     public List<BalanceDto> getAllBalances() {
         log.info("/{}{} called", SERVICE_PATH, METHOD_GET_BALANCE_ALL);
@@ -57,7 +55,7 @@ public class BankAccountController {
                 .collect(Collectors.toList());
     }
 
-
+    /*Get balance for bank account Id*/
     @GetMapping(value = METHOD_GET_BALANCE_WITH_PARAM)
     public BalanceDto getBalance(@PathVariable(name = "bankAccountId") Long bankAccountId) {
         log.info("/{}{}/{} called", SERVICE_PATH, METHOD_GET_BALANCE, bankAccountId);
