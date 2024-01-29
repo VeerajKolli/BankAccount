@@ -7,7 +7,7 @@ This application is a simple bank account implementation. An account able to wit
 
 # Requirements and Assumptions
 
-1. Mysql database is used to implement this project and after downloading, create a database schema and pass the URL,username and password in application.properties under src/main/resources. Attached scripts are located in the project directory(Database_mysql.zip). This scripts must be implemented before starting springboot application.
+1. Mysql database is used to implement this project and after downloading, create a database schema and pass the URL,username and password in application.properties under src/main/resources. Attached scripts are located in the project directory(mysql_database_scripts.zip). This scripts must be implemented before starting springboot application.
 2. ![image](https://github.com/VeerajKolli/BankAccount/assets/79200457/2d1e2e1b-b79f-4257-b25c-52cd30e070cb) has been added as external library to the project as the dependency was not found in rabobank-public repository.
 
     Postman examples can be found here : RestApis.md in project directory.  
