@@ -3,7 +3,7 @@ The following was discovered as part of building this project:
 
 # Getting Started
 
-This application is a simple bank account implementation. An account able to withdraw money and transfer money to another account. The transfer can be with debit card or credit card. If a credit card is used, extra %1 transaction fee is charged. An account can be linked with a credit card or bank account.
+This application is a simple bank account implementation. An account able to deposit, withdraw money and transfer money to another account. The transfer can be with debit card or credit card. If a credit card is used, extra %1 transaction fee is charged. An account can be linked with a credit card or bank account.
 
 # Requirements and Assumptions
 
@@ -19,10 +19,10 @@ This application is a simple bank account implementation. An account able to wit
     All models are placed in nl.rabobank.assignment.entities package.  
 6. One rest endpoint to see current available balance in all accounts
     BankAccountController.getAllBalances and BankAccountController.getBalance.  
-7. One rest endpoint to Deposit money  
-      DepositWithdrawController.deposit  
+7. One rest endpoint to Deposit money (Additionally added) 
+    DepositWithdrawController.deposit  
 8. One rest endpoint to withdraw money  
-    WithdrawController.withdraw  
+    DepositWithdrawController.withdraw  
 9. One rest endpoint to transfer money  
     TransferController.transfer
 10. One credit card or debit card is linked with one account  
