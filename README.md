@@ -19,7 +19,7 @@ This application is a simple bank account implementation. An account able to dep
     All models are placed in nl.rabobank.assignment.entities package.  
 6. One rest endpoint to see current available balance in all accounts
     BankAccountController.getAllBalances and BankAccountController.getBalance.  
-7. One rest endpoint to Deposit money (Additionally added) 
+7. One rest endpoint to Deposit money (Additionally added)   
     DepositWithdrawController.deposit  
 8. One rest endpoint to withdraw money  
     DepositWithdrawController.withdraw  
