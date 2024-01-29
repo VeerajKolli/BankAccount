@@ -38,7 +38,7 @@ Response Body:
 
 # 4. Create new bank account for customerID  
 Method: PUT   
-URL:http://localhost:8080/api/bank/account/{customerID}
+URL:http://localhost:8080/api/bank/account/{customerID}  
 Request Body:  
 {  
     "iban":"NL00XXXX01234567",  
@@ -91,6 +91,6 @@ Response : 200 Ok
 # 9. Transfer money between Customers using Account IDs
   
 Method : Post  
-URL: http://localhost:8080/api/transfer/{AccountId1}/{AccountId2} 
+URL: http://localhost:8080/api/transfer/{AccountId1}/{AccountId2}   
 Request Body :{"amount":"100.0"}  
 Response : 200 Ok
