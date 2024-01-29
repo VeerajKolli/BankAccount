@@ -25,7 +25,7 @@ Response Body:
     }  
 # 3. Get a particular customer using customerID   
 Method: GET   
-URL: http://localhost:8080/api/customer/{customerId} 
+URL: http://localhost:8080/api/customer/{customerId}   
 Request Body : {}  
 Response Body:   
 {  
