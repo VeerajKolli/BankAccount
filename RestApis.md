@@ -25,7 +25,7 @@ Response Body:
     }  
 # 3. Get a particular customer using customerID   
 Method: GET   
-URL: http://localhost:8080/api/customer/1  
+URL: http://localhost:8080/api/customer/{customerId} 
 Request Body : {}  
 Response Body:   
 {  
@@ -38,7 +38,7 @@ Response Body:
 
 # 4. Create new bank account for customerID  
 Method: PUT   
-URL:http://localhost:8080/api/bank/account/1
+URL:http://localhost:8080/api/bank/account/{customerID}
 Request Body:  
 {  
     "iban":"NL00XXXX01234567",  
@@ -64,9 +64,9 @@ Response Body :
         "currentBalance": 1000.00  
     }  
 
-# 6. Get account balance for a particular customerId  
+# 6. Get account balance for a particular Account Id  
 Method:GET   
-URL: http://localhost:8080/api/bank/account/balance/9  
+URL: http://localhost:8080/api/bank/account/balance/{AccountId}   
 Request Body :{}  
 Response Body :  
 {  
@@ -74,23 +74,23 @@ Response Body :
     "currentBalance": 1000.00  
 }  
 
-# 7. Withdraw money from CustomerId  
+# 7. Withdraw money from Account ID  
 
 Method : Post  
-URL: http://localhost:8080/api/depositorwithdraw/withdraw/10  
+URL: http://localhost:8080/api/depositorwithdraw/withdraw/{AccountId}  
 Request Body :{"amount":"100.0"}  
 Response : 200 Ok  
 
-# 8. Withdraw money from CustomerId  
+# 8. Withdraw money fromAccount ID  
   
 Method : Post  
-URL: http://localhost:8080/api/depositorwithdraw/deposit/10  
+URL: http://localhost:8080/api/depositorwithdraw/deposit/{AccountId}   
 Request Body :{"amount":"100.0"}  
 Response : 200 Ok  
   
-# 9. Transfer money between Customers  
+# 9. Transfer money between Customers using Account IDs
   
 Method : Post  
-URL: http://localhost:8080/api/transfer/10/11  
+URL: http://localhost:8080/api/transfer/{AccountId1}/{AccountId2} 
 Request Body :{"amount":"100.0"}  
 Response : 200 Ok
