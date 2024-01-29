@@ -2,6 +2,7 @@ package nl.rabobank.assignment.services;
 
 import lombok.extern.slf4j.Slf4j;
 import nl.rabobank.assignment.entities.entity.BankAccount;
+import nl.rabobank.assignment.entities.enums.CardType;
 import nl.rabobank.assignment.entities.enums.TransactionType;
 import nl.rabobank.assignment.exceptions.BankAccountManagerException;
 import org.springframework.stereotype.Service;
@@ -22,9 +23,9 @@ public class TransactionFeeService {
 
     public BigDecimal getFee(TransactionType transactionType, BankAccount bankAccount, BigDecimal amount) {
 
-        /*if (CardType.DEBIT_CARD.equals(bankAccount.getCard().getCardType())) {
+        if (CardType.DEBIT_CARD.equals(bankAccount.getCard().getCardType())) {
             return BigDecimal.ZERO;
-        }*/
+        }
 
         if (TransactionType.TRANSFER.equals(transactionType)) {
             return creditCardTransferFeeMultiplier.multiply(amount, mathContext);

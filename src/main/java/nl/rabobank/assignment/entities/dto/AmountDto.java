@@ -12,8 +12,6 @@ import java.math.BigDecimal;
  */
 @Builder
 @Data
-// we should add these two annotations if we use builder for DTOs
-// Fixing the errors: no Creators, like default construct, exist
 @NoArgsConstructor
 @AllArgsConstructor
 public class AmountDto {

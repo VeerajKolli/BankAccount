@@ -56,8 +56,6 @@ public class TransactionHistory implements Serializable {
 
     private BigDecimal afterBalance;
 
-    private Long correlationId;
-
     private String failingReason;
 
     @Enumerated(EnumType.STRING)

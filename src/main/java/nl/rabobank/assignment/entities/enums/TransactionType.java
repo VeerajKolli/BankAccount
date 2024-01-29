@@ -4,5 +4,5 @@ package nl.rabobank.assignment.entities.enums;
  * Types of transaction in this implementation
  */
 public enum TransactionType {
-    TRANSFER, WITHDRAW
+    TRANSFER, WITHDRAW, DEPOSIT
 }

@@ -1,6 +1,5 @@
 package nl.rabobank.assignment.services;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import nl.rabobank.assignment.entities.entity.BankAccount;
 import nl.rabobank.assignment.entities.entity.TransactionHistory;
@@ -8,73 +7,113 @@ import nl.rabobank.assignment.entities.enums.TransactionStatus;
 import nl.rabobank.assignment.entities.enums.TransactionType;
 import nl.rabobank.assignment.entities.enums.StatementType;
 import nl.rabobank.assignment.exceptions.InsufficientBalanceManagerException;
+import nl.rabobank.assignment.repositories.TransactionHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @Slf4j
-@AllArgsConstructor(onConstructor_ = {@Autowired})
 @Service
 public class TransactionService {
 
-    private static final String ERROR_CREATING_INSERTER = "Error while transaction history to executor";
+    private final ValidationService validationService;
+    private final BankAccountService bankAccountService;
+    private final TransactionFeeService transactionFeeService;
 
-    private ValidationService validationService;
-    private BankAccountService bankAccountService;
-    private TransactionFeeService transactionFeeService;
-    private ApplicationEventPublisher applicationEventPublisher;
+    private final TransactionHistoryRepository transactionHistoryRepository;
+
+    @Autowired
+    public TransactionService(ValidationService validationService,BankAccountService bankAccountService,TransactionFeeService transactionFeeService, TransactionHistoryRepository transactionHistoryRepository)
+    {
+        this.validationService = validationService;
+        this.bankAccountService = bankAccountService;
+        this.transactionFeeService = transactionFeeService;
+        this.transactionHistoryRepository = transactionHistoryRepository;
+    }
 
     public void executeWithdraw(BankAccount bankAccount, BigDecimal amount) {
-
-        TransactionHistory.TransactionHistoryBuilder transactionHistoryBuilder = getTransactionHistoryBuilder(
-                TransactionType.WITHDRAW,
-                StatementType.WITHDRAW,
-                bankAccount,
-                amount);
+        TransactionHistory transactionHistory = getTransactionHistory(bankAccount, amount,TransactionType.WITHDRAW,StatementType.WITHDRAW);
         try {
 
-            takeMoney(transactionHistoryBuilder, bankAccount, amount);
+            takeMoney(transactionHistory, bankAccount, amount);
 
         } catch (InsufficientBalanceManagerException e) {
+            transactionHistory.setStatus(TransactionStatus.INSUFFICIENT_BALANCE);
+            transactionHistory.setFailingReason(e.getMessage());
+            saveTransactionHistory(transactionHistory);
               throw e;
 
         } finally {
+            saveTransactionHistory(transactionHistory);
         }
+    }
+
+    public void executeDeposit(BankAccount bankAccount, BigDecimal amount) {
+
+
+        TransactionHistory transactionHistory = getTransactionHistory(bankAccount, amount,TransactionType.DEPOSIT,StatementType.DEPOSIT);
+        try {
+            putMoney(transactionHistory, bankAccount, amount);
+        } catch (InsufficientBalanceManagerException e) {
+            transactionHistory.setStatus(TransactionStatus.INSUFFICIENT_BALANCE);
+            transactionHistory.setFailingReason(e.getMessage());
+            saveTransactionHistory(transactionHistory);
+            throw e;
+
+        } finally {
+            saveTransactionHistory(transactionHistory);
+        }
+    }
+
+    private TransactionHistory getTransactionHistory(BankAccount bankAccount, BigDecimal amount,TransactionType type,StatementType statementType) {
+        TransactionHistory transactionHistory =  new TransactionHistory();
+        transactionHistory.setType(type);
+        transactionHistory.setStatementType(statementType);
+        transactionHistory.setBankAccountId(bankAccount.getId());
+        transactionHistory.setCardId(bankAccount.getCard().getId());
+        transactionHistory.setCustomerId(bankAccount.getCustomer().getId());
+        transactionHistory.setBeforeBalance(bankAccount.getCurrentBalance());
+        transactionHistory.setAmount(amount);
+        return transactionHistory;
     }
 
 
     public void executeTransfer(BankAccount fromBankAccount, BankAccount toBankAccount, final BigDecimal amount) {
 
         // create TransactionHistoryBuilder for fromBankAccount
-        TransactionHistory.TransactionHistoryBuilder fromTransactionHistoryBuilder = getTransactionHistoryBuilder(
-                TransactionType.TRANSFER,
-                StatementType.WITHDRAW,
-                fromBankAccount,
-                amount);
+        TransactionHistory fromTransactionHistory = new TransactionHistory();
+        fromTransactionHistory.setType(TransactionType.TRANSFER);
+        fromTransactionHistory.setStatementType(StatementType.WITHDRAW);
+        fromTransactionHistory.setBankAccountId(fromBankAccount.getId());
+        fromTransactionHistory.setCustomerId(fromBankAccount.getCustomer().getId());
+        fromTransactionHistory.setCardId(fromBankAccount.getCard().getId());
+        fromTransactionHistory.setBeforeBalance(fromBankAccount.getCurrentBalance());
 
-        // create TransactionHistoryBuilder for toBankAccount
-        TransactionHistory.TransactionHistoryBuilder toTransactionHistoryBuilder = getTransactionHistoryBuilder(
-                TransactionType.TRANSFER,
-                StatementType.DEPOSIT,
-                toBankAccount,
-                amount);
 
+        TransactionHistory toTransactionHistory = new TransactionHistory();
+        toTransactionHistory.setType(TransactionType.TRANSFER);
+        toTransactionHistory.setStatementType(StatementType.DEPOSIT);
+        toTransactionHistory.setBankAccountId(fromBankAccount.getId());
+        toTransactionHistory.setCustomerId(fromBankAccount.getCustomer().getId());
+        toTransactionHistory.setCardId(fromBankAccount.getCard().getId());
         try {
 
-            takeMoney(fromTransactionHistoryBuilder, fromBankAccount, amount);
-            putMoney(toTransactionHistoryBuilder, toBankAccount, amount);
+            takeMoney(fromTransactionHistory, fromBankAccount, amount);
+            saveTransactionHistory(fromTransactionHistory);
+            putMoney(toTransactionHistory, toBankAccount, amount);
+            saveTransactionHistory(toTransactionHistory);
 
         } catch (InsufficientBalanceManagerException e) {
+            fromTransactionHistory.setStatus(TransactionStatus.INSUFFICIENT_BALANCE);
+            fromTransactionHistory.setFailingReason(e.getMessage());
+            saveTransactionHistory(fromTransactionHistory);
             throw e;
 
-        } finally {
         }
     }
 
-    private void takeMoney(TransactionHistory.TransactionHistoryBuilder transactionHistoryBuilder, BankAccount bankAccount, BigDecimal amount) {
+    private void takeMoney(TransactionHistory transactionHistory, BankAccount bankAccount, BigDecimal amount) {
         BigDecimal fee = transactionFeeService.getFee(TransactionType.WITHDRAW, bankAccount, amount);
         BigDecimal totalAmount = transactionFeeService.getTotalAmount(amount, fee);
 
@@ -83,35 +122,23 @@ public class TransactionService {
         BankAccount updatedBankAccount = bankAccountService.decreaseCurrentBalance(bankAccount, totalAmount);
         validationService.validateCurrentBalance(updatedBankAccount);
 
-        transactionHistoryBuilder.status(TransactionStatus.SUCCESS)
-                .fee(fee)
-                .totalAmount(totalAmount)
-                .afterBalance(updatedBankAccount.getCurrentBalance());
+        transactionHistory.setStatus(TransactionStatus.SUCCESS);
+        transactionHistory.setFee(fee);
+        transactionHistory.setTotalAmount(totalAmount);
+        transactionHistory.setAfterBalance(updatedBankAccount.getCurrentBalance());
     }
 
-    private void putMoney(TransactionHistory.TransactionHistoryBuilder transactionHistoryBuilder, BankAccount bankAccount, BigDecimal amount) {
+    private void putMoney(TransactionHistory transactionHistory, BankAccount bankAccount, BigDecimal amount) {
 
         BankAccount updatedBankAccount = bankAccountService.increaseCurrentBalance(bankAccount, amount);
 
-        transactionHistoryBuilder.status(TransactionStatus.SUCCESS)
-                .fee(BigDecimal.ZERO)
-                .totalAmount(amount)
-                .afterBalance(updatedBankAccount.getCurrentBalance());
-    }
+        transactionHistory.setStatus(TransactionStatus.SUCCESS);
+        transactionHistory.setFee(BigDecimal.ZERO);
+        transactionHistory.setTotalAmount(amount);
+        transactionHistory.setAfterBalance(updatedBankAccount.getCurrentBalance());
+        }
 
-    private TransactionHistory.TransactionHistoryBuilder getTransactionHistoryBuilder(
-            TransactionType transactionType,
-            StatementType statementType,
-            BankAccount bankAccount,
-            BigDecimal amount) {
-
-        return TransactionHistory.builder()
-                .type(transactionType)
-                .statementType(statementType)
-                .amount(amount)
-                .customerId(bankAccount.getCustomer().getId())
-                .bankAccountId(bankAccount.getId())
-                .cardId(bankAccount.getCard().getId())
-                .beforeBalance(bankAccount.getCurrentBalance());
+    private void saveTransactionHistory(TransactionHistory transactionHistory){
+        transactionHistoryRepository.save(transactionHistory);
     }
 }
