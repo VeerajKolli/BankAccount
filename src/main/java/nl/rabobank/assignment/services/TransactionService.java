@@ -81,7 +81,6 @@ public class TransactionService {
 
     public void executeTransfer(BankAccount fromBankAccount, BankAccount toBankAccount, final BigDecimal amount) {
 
-        // create TransactionHistoryBuilder for fromBankAccount
         TransactionHistory fromTransactionHistory = new TransactionHistory();
         fromTransactionHistory.setType(TransactionType.TRANSFER);
         fromTransactionHistory.setStatementType(StatementType.WITHDRAW);
@@ -90,13 +89,13 @@ public class TransactionService {
         fromTransactionHistory.setCardId(fromBankAccount.getCard().getId());
         fromTransactionHistory.setBeforeBalance(fromBankAccount.getCurrentBalance());
 
-
         TransactionHistory toTransactionHistory = new TransactionHistory();
         toTransactionHistory.setType(TransactionType.TRANSFER);
         toTransactionHistory.setStatementType(StatementType.DEPOSIT);
-        toTransactionHistory.setBankAccountId(fromBankAccount.getId());
-        toTransactionHistory.setCustomerId(fromBankAccount.getCustomer().getId());
-        toTransactionHistory.setCardId(fromBankAccount.getCard().getId());
+        toTransactionHistory.setBankAccountId(toBankAccount.getId());
+        toTransactionHistory.setCustomerId(toBankAccount.getCustomer().getId());
+        toTransactionHistory.setCardId(toBankAccount.getCard().getId());
+        toTransactionHistory.setBeforeBalance(toBankAccount.getCurrentBalance());
         try {
 
             takeMoney(fromTransactionHistory, fromBankAccount, amount);
