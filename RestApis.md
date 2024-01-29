@@ -80,13 +80,19 @@ Method : Post
 URL: http://localhost:8080/api/depositorwithdraw/withdraw/{AccountId}  
 Request Body :{"amount":"100.0"}  
 Response : 200 Ok  
+Error Response Status:
+            400 = Bad Request
+            500 = Internal Error
 
-# 8. Withdraw money fromAccount ID  
+# 8. Deposit money to Account ID  
   
 Method : Post  
 URL: http://localhost:8080/api/depositorwithdraw/deposit/{AccountId}   
 Request Body :{"amount":"100.0"}  
-Response : 200 Ok  
+Response : 200 Ok 
+Error Response Status:
+            400 = Bad Request
+            500 = Internal Error
   
 # 9. Transfer money between Customers using Account IDs
   
@@ -94,3 +100,6 @@ Method : Post
 URL: http://localhost:8080/api/transfer/{AccountId1}/{AccountId2}   
 Request Body :{"amount":"100.0"}  
 Response : 200 Ok
+Error Response Status:
+            400 = Bad Request
+            500 = Internal Error
