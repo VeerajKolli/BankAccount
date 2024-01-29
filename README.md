@@ -33,5 +33,5 @@ This application is a simple bank account implementation. An account able to wit
 # Testing
 
 1. 3 customers are already part of the scripts which can be used for testing.  
-2. Create bank account at-least for 2 customers using rest api to test transfers, withdraw and deposits.
+2. Create bank account for at-least for 2 customers using rest api to test transfers, withdraw and deposits.
 3. Remaining rest api's should be able to access without any issues
