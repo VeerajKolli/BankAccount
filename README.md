@@ -6,18 +6,18 @@ The following was discovered as part of building this project:
 This application is a simple bank account implementation. An account able to deposit, withdraw money and transfer money to another account. The transfer can be with debit card or credit card. If a credit card is used, extra %1 transaction fee is charged.
 
 # Prerequisites
-JDK17
-Maven
-Intellij IDE
-Postman
-MySQL Server and Workbench
+JDK17  
+Maven  
+Intellij IDE  
+Postman  
+MySQL Server and Workbench  
 
 # Stacks
-Spring Boot
-Hibernate/JPA
-MySQL
-Lombok
-
+Spring Boot  
+Hibernate/JPA  
+MySQL  
+Lombok  
+  
 # Requirements and Assumptions
 
 1. Mysql database is used to implement this project and after downloading, create a database schema(temp) and pass the URL,username and password in application.properties under src/main/resources. Attached scripts are located in the project directory(mysql_database_scripts.zip). This scripts must be implemented before starting springboot application.
